@@ -80,6 +80,31 @@ export default function Home() {
         </button>
       </header>
 
+      {/* Navigation Sub-header */}
+      <nav className="flex items-center gap-2 mb-8 bg-slate-900/40 p-1.5 rounded-2xl border border-white/5 w-fit animate-fade-in">
+        <button className="px-6 py-2.5 rounded-xl bg-primary text-white font-medium shadow-lg shadow-primary/20 transition-all">
+          Resume Builder
+        </button>
+        <button 
+          onClick={() => router.push("/notes-saver")}
+          className="px-6 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium"
+        >
+          Notes Saver
+        </button>
+        <button 
+          onClick={() => router.push("/youtube-summariser")}
+          className="px-6 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium"
+        >
+          YT Summariser
+        </button>
+        <button 
+          onClick={() => router.push("/job-search")}
+          className="px-6 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium"
+        >
+          Job Search
+        </button>
+      </nav>
+
       <main className="flex-1 grid lg:grid-cols-12 gap-8 items-start relative">
         {/* Left Column - Form */}
         <div className="lg:col-span-4 xl:col-span-5 flex flex-col gap-6 w-full animate-slide-up">
