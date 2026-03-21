@@ -12,8 +12,22 @@ export async function POST(req: Request) {
         model: "gpt-3.5-turbo",
         messages: [
           {
+            role: "system",
+            content: "You are a professional resume writer. Always output in valid JSON format only.",
+          },
+          {
             role: "user",
-            content: `Create a professional resume for ${name} with skills: ${skills}`,
+            content: `Create a professional resume for ${name} with skills: ${skills}. 
+            Return a JSON object with this structure: 
+            {
+              "name": "${name}",
+              "title": "A professional job title",
+              "summary": "A 2-3 sentence professional summary",
+              "contact": { "email": "user@example.com", "phone": "123-456-7890", "location": "City, Country" },
+              "skills": ["Skill 1", "Skill 2", ...],
+              "experience": [{ "company": "Company Name", "role": "Job Title", "period": "2020 - Present", "description": ["Achievement 1", "Achievement 2"] }],
+              "education": [{ "school": "University Name", "degree": "Degree Name", "year": "2020" }]
+            }`,
           },
         ],
       }),
@@ -25,43 +39,50 @@ export async function POST(req: Request) {
     if (data.error) {
        console.log("OpenAI API Error:", data.error.message);
        
-       const mockResume = `
-# ${name}
-**Professional Software Engineer & Technologist**
-
----
-
-> ⚠️ *Note: Your OpenAI API key ran out of credits or was rejected! This is a beautifully formatted sample resume to show you how the builder looks. To generate real resumes, please add credits to your OpenAI account.*
-
-## Profile summary
-Dynamically-driven professional with a deep passion for technology and building robust systems. Highly adaptable, proven ability to ship high-quality products under tight deadlines, and eager to leverage top-tier skills to push the boundaries of what's possible.
-
-## Core Skills
-${skills.split(',').map((s: string) => `- **${s.trim()}**`).join('\n')}
-
-## Professional Experience
-
-### Senior Developer | Tech Innovators Inc.
-*2020 – Present*
-- Spearheaded the complete overhaul of front-end infrastructure, resulting in a 40% performance increase.
-- Architected a robust CI/CD pipeline, reducing deployment times from hours to minutes.
-- Mentored junior engineers and led code review sessions enforcing clean coding standards.
-
-### Junior Engineer | StartUp Labs
-*2018 – 2020*
-- Developed responsive web interfaces handling 10k+ daily active users.
-- Collaborated closely with design teams to perfectly translate Figma wireframes to code.
-- Successfully migrated legacy applications to modern React architectures.
-
-## Education
-**B.S. in Computer Science**
-*University of Engineering, 2018*
-- Graduated with honors (Cum Laude).
-- Specialized in modern web technologies and elegant software patterns.
-       `;
+       const mockResume = {
+         name: name,
+         title: "Senior Full Stack Engineer",
+         summary: "Performance-oriented developer with 8+ years of experience in building scalable web applications. Expert in React, Node.js, and Cloud Infrastructure with a passion for clean code and exceptional user experiences.",
+         contact: {
+           email: "hello@example.com",
+           phone: "+1 (555) 000-1111",
+           location: "San Francisco, CA"
+         },
+         skills: skills.split(',').map((s: string) => s.trim()),
+         experience: [
+           {
+             company: "Tech Innovators Inc.",
+             role: "Senior Developer",
+             period: "2020 – Present",
+             description: [
+               "Spearheaded the complete overhaul of front-end infrastructure, resulting in a 40% performance increase.",
+               "Architected a robust CI/CD pipeline, reducing deployment times from hours to minutes.",
+               "Mentored junior engineers and led code review sessions enforcing clean coding standards."
+             ]
+           },
+           {
+             company: "StartUp Labs",
+             role: "Junior Engineer",
+             period: "2018 – 2020",
+             description: [
+               "Developed responsive web interfaces handling 10k+ daily active users.",
+               "Collaborated closely with design teams to perfectly translate Figma wireframes to code.",
+               "Successfully migrated legacy applications to modern React architectures."
+             ]
+           }
+         ],
+         education: [
+           {
+             school: "University of Engineering",
+             degree: "B.S. in Computer Science",
+             year: "2018",
+             description: "Graduated with honors (Cum Laude)."
+           }
+         ]
+       };
        
        return Response.json({
-         result: mockResume.trim(),
+         result: mockResume,
        });
     }
 
