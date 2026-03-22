@@ -16,6 +16,7 @@ import TechTemplate from "../components/templates/Tech";
 import AcademicTemplate from "../components/templates/Academic";
 import CompactTemplate from "../components/templates/Compact";
 import BoldTemplate from "../components/templates/Bold";
+import SuiteHeader from "../components/SuiteHeader";
 
 export default function Home() {
   const router = useRouter();
@@ -195,42 +196,13 @@ ${resumeData.education.map(edu => `${edu.degree} from ${edu.school} (${edu.year}
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[150px] animate-pulse-slow" style={{ animationDelay: '1.5s' }} />
       </div>
 
-      {/* Header */}
-      <header className="flex items-center justify-between mb-8 animate-fade-in">
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-br from-primary to-accent p-2 rounded-xl text-white shadow-lg shadow-primary/30 rotate-3">
-            <Sparkles className="w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tighter text-white">ResumeAI <span className="text-primary italic">Pro</span></h1>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Premium Intelligence</p>
-          </div>
-        </div>
-        
-        <button 
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white transition-all bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded-full border border-white/5 hover:border-white/10"
-        >
-          <LogOut className="w-4 h-4" />
-          <span className="hidden sm:inline">Terminate Session</span>
-        </button>
-      </header>
-
-      {/* Nav */}
-      <nav className="flex items-center gap-2 mb-10 bg-slate-900/60 p-1.5 rounded-2xl border border-white/5 w-fit animate-fade-in backdrop-blur-xl">
-        <button className="px-6 py-2.5 rounded-xl bg-primary text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20">
-          Builder
-        </button>
-        <button onClick={() => router.push("/notes-saver")} className="px-6 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 text-xs uppercase tracking-widest font-black transition-all">
-          Notes
-        </button>
-        <button onClick={() => router.push("/youtube-summariser")} className="px-6 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 text-xs uppercase tracking-widest font-black transition-all">
-          YouTube
-        </button>
-        <button onClick={() => router.push("/job-search")} className="px-6 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 text-xs uppercase tracking-widest font-black transition-all">
-          Jobs
-        </button>
-      </nav>
+      {/* Header & Nav */}
+      <SuiteHeader 
+        title="ResumeAI Pro"
+        subtitle="Premium Intelligence"
+        icon={Sparkles}
+        themeColor="primary"
+      />
 
       <main className="flex-1 grid lg:grid-cols-12 gap-8 items-start">
         {/* Form Column */}
