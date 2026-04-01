@@ -168,30 +168,49 @@ export default function BuilderPage() {
         logging: false,
         windowWidth: 800,
         onclone: (clonedDoc: Document) => {
-          // AGGRESSIVE NEURAL GUARD:
-          // Recursively scan and force-convert any oklch/oklab color functions
-          // which are unsupported by the PDF engine's parser.
-          const elements = clonedDoc.getElementsByTagName("*");
-          for (let i = 0; i < elements.length; i++) {
-            const el = elements[i] as HTMLElement;
-            
-            // SVG-Safe className check: SVGs use SVGAnimatedString for className
-            const className = typeof el.className === 'string' ? el.className : (el.className as any)?.baseVal || "";
-            const style = el.getAttribute("style") || "";
-            
-            if (style.includes("oklch") || style.includes("oklab")) {
-              el.style.color = "#000000";
-              el.style.backgroundColor = "transparent";
-              el.style.borderColor = "#e2e8f0";
-            }
-            
-            // Force reset any tailwind-generated dynamic color properties
-            if (className.includes("text-") || className.includes("bg-")) {
-               const computed = window.getComputedStyle(el);
-               if (computed.color.includes("ok")) el.style.color = "#0f172a";
-               if (computed.backgroundColor.includes("ok")) el.style.backgroundColor = "transparent";
-            }
-          }
+          // ABSOLUTELY ISOLATED NEURAL SANDBOX:
+          // We must strip every single modern style that might contain oklch/oklab.
+          const styleTags = clonedDoc.getElementsByTagName("style");
+          const linkTags = clonedDoc.getElementsByTagName("link");
+          
+          // Remove all existing stylesheets
+          Array.from(styleTags).forEach(s => s.remove());
+          Array.from(linkTags).forEach(l => l.remove());
+
+          // Inject a LEGACY-SAFE, MINIMALIST stylesheet
+          const safetyStyle = clonedDoc.createElement("style");
+          safetyStyle.innerHTML = `
+            * { box-sizing: border-box; }
+            body { font-family: sans-serif; background: #ffffff; color: #000000; margin: 0; padding: 0; }
+            .p-16 { padding: 4rem; }
+            .p-10 { padding: 2.5rem; }
+            .p-8 { padding: 2rem; }
+            .bg-white { background-color: #ffffff !important; }
+            .bg-slate-50 { background-color: #f8fafc !important; }
+            .text-slate-900 { color: #0f172a !important; }
+            .text-slate-800 { color: #1e293b !important; }
+            .text-slate-600 { color: #475569 !important; }
+            .font-serif { font-family: serif !important; }
+            .flex { display: flex !important; }
+            .grid { display: grid !important; }
+            .justify-between { justify-content: space-between !important; }
+            .items-baseline { align-items: baseline !important; }
+            .space-y-16 > * + * { margin-top: 4rem !important; }
+            .space-y-12 > * + * { margin-top: 3rem !important; }
+            .space-y-8 > * + * { margin-top: 2rem !important; }
+            .border-b-4 { border-bottom: 4px solid !important; }
+            .border-b-2 { border-bottom: 2px solid !important; }
+            .border-b { border-bottom: 1px solid !important; }
+            .uppercase { text-transform: uppercase !important; }
+            .italic { font-style: italic !important; }
+            .text-5xl { font-size: 3rem !important; }
+            .text-4xl { font-size: 2.25rem !important; }
+            .text-2xl { font-size: 1.5rem !important; }
+            .font-bold { font-weight: 700 !important; }
+            .font-black { font-weight: 900 !important; }
+            [style*="oklch"], [style*="oklab"] { color: #000000 !important; background-color: transparent !important; }
+          `;
+          clonedDoc.head.appendChild(safetyStyle);
         }
       };
 
