@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ResumeAI: Premium Neural Resume Engineering
 
-## Getting Started
+The industry-standard AI resume system. Bypassing modern ATS filters through structural precision and high-impact semantic optimization.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Neural Builder**: Real-time, split-screen editing with live-sync visualization.
+- **ATS-Optimized Templates**: Precision-engineered layouts (Modern, Creative, Tech) designed to pass through any recruiter filter.
+- **AI Enhancement**: Integrated with Google Gemini for professional summary and experience refinement.
+- **Quick Access**: One-click demo mode for immediate entry.
+- **PDF Export**: High-fidelity PDF generation matching the visual design.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Deployment (Vercel)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To get a professional deployment link like `https://ai-resume-builder-rakshitharaks570.vercel.app/`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Push to GitHub**: Initialize a git repository and push your code to GitHub.
+    ```bash
+    git init
+    git add .
+    git commit -m "feat: Neural Resume Engine Initialized"
+    git remote add origin YOUR_GITHUB_REPO_URL
+    git push -u origin main
+    ```
+2.  **Import to Vercel**: 
+    - Go to [Vercel](https://vercel.com).
+    - Import your new GitHub repository.
+    - Add your `GOOGLE_API_KEY` and `NEXTAUTH_SECRET` to the environment variables.
+3.  **Launch**: Vercel will provide you with a unique, professional deployment URL.
 
-## Learn More
+## 🔑 Universal Node Access
+The system is currently in **Open Access Mode**. You can log in using **any email address**. This allows for seamless collaborative testing and universal access to the neural resume engine.
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Technology Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework**: Next.js 15+ (App Router)
+- **Styling**: Tailwind CSS 4.0, Framer Motion
+- **AI**: Google Generative AI (Gemini Flash)
+- **Auth**: NextAuth.js
+- **PDF**: jsPDF + html2canvas
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Getting Started
 
-## Deploy on Vercel
+1. **Clone & Install**:
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Environment Setup**:
+   Create a `.env.local` file with:
+   - `GOOGLE_API_KEY`: Your Gemini API Key
+   - `NEXTAUTH_SECRET`: A secure random string
+   - `NEXTAUTH_URL`: `http://localhost:3000`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Run Dev**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Access**:
+   Navigate to `http://localhost:3000/login` and use the **Universal Quick Access** button.
+
+## 🎨 Design Philosophy
+
+ResumeAI is built on the **Glassmorphism** principle, featuring:
+- Deep slate backgrounds (#050505)
+- Indigo neon accents
+- Subtle neural grid patterns
+- Micro-animations for feedback
+
+---
+&copy; 2026 VAULT ARCHIVE | Neural Intelligence Active

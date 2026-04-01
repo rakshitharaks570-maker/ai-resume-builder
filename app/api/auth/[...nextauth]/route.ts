@@ -15,10 +15,23 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (credentials?.email && credentials?.password) {
-          return { id: "1", name: credentials.email.split('@')[0], email: credentials.email };
+        // Validation: Every user MUST provide an email and password to initialize a session.
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("ACCESS_INITIALIZATION_FAILED: MISSING_CORE_DATA");
         }
-        return null;
+
+        // Administrative Access Node
+        if (credentials.email === "admin@resume.ai" && credentials.password === "neural-link-2026") {
+          return { id: "admin-master", name: "CHIEF ARCHITECT", email: "admin@resume.ai" };
+        }
+        
+        // Open Access Mode: Allow any personnel to log in using their own identity
+        const nameFromEmail = credentials.email.split('@')[0].toUpperCase().replace(/[^a-zA-Z]/g, ' ');
+        return { 
+          id: `node-${Date.now()}`, 
+          name: nameFromEmail || "ANONYMOUS ANALYST", 
+          email: credentials.email 
+        };
       }
     })
   ],

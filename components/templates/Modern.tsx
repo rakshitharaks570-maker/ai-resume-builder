@@ -2,53 +2,65 @@ import { ResumeData } from "../../types/resume";
 
 export default function ModernTemplate({ data }: { data: ResumeData }) {
   return (
-    <div className="p-0 bg-white text-slate-800 font-sans max-w-[800px] mx-auto shadow-2xl min-h-[1050px] overflow-hidden">
-      <div className="bg-primary text-white p-12 relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24 blur-3xl" />
+    <div className="p-0 bg-white text-[#0f172a] font-sans max-w-[800px] mx-auto shadow-2xl min-h-[1100px] overflow-hidden flex flex-col">
+      {/* High-Impact Header */}
+      <div className="bg-[#0f172a] text-white p-16 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[rgba(99,102,241,0.1)] rounded-full -mr-40 -mt-40 blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[rgba(168,85,247,0.1)] rounded-full -ml-32 -mb-32 blur-3xl" />
         
-        <h1 className="text-5xl font-extrabold tracking-tight mb-3 relative z-10">{data.name}</h1>
-        <p className="text-2xl text-primary-foreground/90 font-medium tracking-wide mb-8 relative z-10">{data.title}</p>
-        
-        <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-primary-foreground/80 relative z-10">
-          {data.contact.email && <span className="flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full">{data.contact.email}</span>}
-          {data.contact.location && <span className="flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full">{data.contact.location}</span>}
+        <div className="relative z-10 flex flex-col gap-4">
+          <h1 className="text-6xl font-black tracking-tighter leading-none uppercase italic">{data.name}</h1>
+          <p className="text-xl text-[#818cf8] font-bold tracking-[0.2em] uppercase">{data.title}</p>
+          
+          <div className="flex flex-wrap gap-6 mt-6 items-center text-[10px] font-black uppercase tracking-widest text-[#94a3b8]">
+            {data.contact.email && (
+              <span className="flex items-center gap-2 border border-[rgba(255,255,255,0.1)] px-4 py-2 rounded-full bg-[rgba(255,255,255,0.05)]">
+                {data.contact.email}
+              </span>
+            )}
+            {data.contact.phone && (
+              <span className="flex items-center gap-2 border border-[rgba(255,255,255,0.1)] px-4 py-2 rounded-full bg-[rgba(255,255,255,0.05)]">
+                {data.contact.phone}
+              </span>
+            )}
+            {data.contact.location && (
+              <span className="flex items-center gap-2 border border-[rgba(255,255,255,0.1)] px-4 py-2 rounded-full bg-[rgba(255,255,255,0.05)]">
+                {data.contact.location}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="p-12 grid grid-cols-12 gap-12">
-        <div className="col-span-12">
-          <section className="mb-12">
-            <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-3">
-              <span className="w-8 h-1 bg-primary rounded-full" />
-              Professional Summary
-            </h2>
-            <p className="text-slate-600 leading-relaxed text-lg border-l-2 border-slate-100 pl-6">{data.summary}</p>
-          </section>
-        </div>
-
+      <div className="p-16 grid grid-cols-12 gap-16 flex-1">
+        {/* Left Column: Experience */}
         <div className="col-span-8">
-          <section className="mb-12">
-            <h2 className="text-xl font-bold text-primary mb-8 flex items-center gap-3">
-              <span className="w-8 h-1 bg-primary rounded-full" />
-              Work Experience
-            </h2>
+          <section className="mb-16">
+            <div className="flex items-center gap-4 mb-10">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Professional Narrative</h2>
+              <div className="flex-1 h-px bg-[#f1f5f9]" />
+            </div>
+            <p className="text-[#475569] leading-relaxed text-lg font-medium">{data.summary}</p>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-4 mb-10">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Operational Experience</h2>
+              <div className="flex-1 h-px bg-[#f1f5f9]" />
+            </div>
             <div className="space-y-12">
               {data.experience.map((exp, index) => (
-                <div key={index} className="relative pl-8">
-                  <div className="absolute left-0 top-0 bottom-0 w-px bg-slate-200" />
-                  <div className="absolute left-[-4px] top-2 w-2 h-2 rounded-full bg-primary" />
-                  
+                <div key={index} className="group transition-all">
                   <div className="flex justify-between items-baseline mb-2">
-                    <h3 className="text-2xl font-bold text-slate-800">{exp.role}</h3>
-                    <span className="text-sm font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-lg tabular-nums uppercase tracking-wider">{exp.period}</span>
+                    <h3 className="text-2xl font-black text-[#0f172a] tracking-tight group-hover:text-[#4f46e5] transition-colors">{exp.role}</h3>
+                    <span className="text-[10px] font-black text-[#94a3b8] border border-[#f1f5f9] px-3 py-1.5 rounded-lg uppercase tracking-widest">{exp.period}</span>
                   </div>
-                  <p className="text-primary font-bold text-lg mb-4">{exp.company}</p>
+                  <p className="text-[#4f46e5] font-bold text-sm mb-4 uppercase tracking-widest">{exp.company}</p>
                   <ul className="space-y-3">
                     {exp.description.map((desc, i) => (
-                      <li key={i} className="text-slate-600 flex items-start gap-2">
-                         <span className="text-primary mt-1.5">•</span>
-                         <span className="leading-relaxed">{desc}</span>
+                      <li key={i} className="text-[#475569] flex items-start gap-3">
+                         <div className="w-1.5 h-1.5 rounded-full bg-[rgba(79,70,229,0.3)] mt-2.5 shrink-0" />
+                         <span className="leading-relaxed font-medium text-[15px]">{desc}</span>
                       </li>
                     ))}
                   </ul>
@@ -58,15 +70,15 @@ export default function ModernTemplate({ data }: { data: ResumeData }) {
           </section>
         </div>
 
-        <div className="col-span-4 space-y-12">
+        {/* Right Column: Skills & Education */}
+        <div className="col-span-4 space-y-16">
           <section>
-            <h2 className="text-xl font-bold text-primary mb-6 flex items-center gap-3">
-              <span className="w-8 h-1 bg-primary rounded-full" />
-              Expertise
-            </h2>
+             <div className="flex items-center gap-4 mb-10">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Core Expertise</h2>
+            </div>
             <div className="flex flex-wrap gap-2">
               {data.skills.map((skill, index) => (
-                <span key={index} className="px-4 py-2 bg-primary/5 text-primary text-sm font-bold rounded-xl border border-primary/10 hover:bg-primary/10 transition-colors">
+                <span key={index} className="px-4 py-2 bg-[#f8fafc] text-[#334155] text-[10px] font-black uppercase tracking-widest rounded-xl border border-[#f1f5f9] hover:border-[#c7d2fe] hover:bg-white hover:text-[#4f46e5] transition-all cursor-default shadow-sm">
                   {skill}
                 </span>
               ))}
@@ -74,22 +86,25 @@ export default function ModernTemplate({ data }: { data: ResumeData }) {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-primary mb-6 flex items-center gap-3">
-              <span className="w-8 h-1 bg-primary rounded-full" />
-              Education
-            </h2>
+            <div className="flex items-center gap-4 mb-10">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Foundations</h2>
+            </div>
             <div className="space-y-8">
               {data.education.map((edu, index) => (
-                <div key={index} className="bg-slate-50 p-6 rounded-2xl border border-slate-100 transition-transform hover:-translate-y-1">
-                  <h3 className="text-slate-800 font-bold text-lg leading-tight mb-2">{edu.degree}</h3>
-                  <p className="text-primary font-semibold text-sm mb-2">{edu.school}</p>
-                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">{edu.year}</p>
+                <div key={index} className="group">
+                  <h3 className="text-[#0f172a] font-black text-sm uppercase tracking-tight mb-2 group-hover:text-[#4f46e5] transition-colors leading-tight">{edu.degree}</h3>
+                  <p className="text-[#64748b] font-bold text-xs mb-1">{edu.school}</p>
+                  <p className="text-[#4f46e5] text-[9px] font-black uppercase tracking-[0.2em]">{edu.year}</p>
                 </div>
               ))}
             </div>
           </section>
         </div>
       </div>
+      
+      {/* Footer / Border */}
+      <div className="h-4 bg-[#0f172a]" />
     </div>
   );
 }
+

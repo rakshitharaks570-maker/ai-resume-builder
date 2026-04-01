@@ -49,7 +49,7 @@ export default function TechTemplate({ data }: { data: ResumeData }) {
           </h2>
           <div className="flex flex-wrap gap-3">
             {data.skills.map((skill, index) => (
-              <span key={index} className="px-3 py-1.5 bg-[#238636]/10 text-[#7ee787] text-[10px] font-bold rounded-md border border-[#238636]/30 uppercase tracking-tighter transition-all hover:bg-[#238636]/20">
+              <span key={index} className="px-3 py-1.5 bg-[rgba(35,134,54,0.1)] text-[#7ee787] text-[10px] font-bold rounded-md border border-[rgba(35,134,54,0.3)] uppercase tracking-tighter transition-all hover:bg-[rgba(35,134,54,0.2)]">
                 "{skill}"
               </span>
             ))}
@@ -89,10 +89,10 @@ export default function TechTemplate({ data }: { data: ResumeData }) {
           </h2>
           <div className="grid grid-cols-2 gap-6">
             {data.education.map((edu, index) => (
-              <div key={index} className="p-5 bg-[#161b22] rounded-xl border border-[#30363d] transition-all hover:border-[#58a6ff]/50">
+              <div key={index} className="p-5 bg-[#161b22] rounded-xl border border-[#30363d] transition-all hover:border-[rgba(88,166,255,0.5)]">
                 <h3 className="text-[#f0f6fc] font-bold text-xs uppercase tracking-tight mb-2 leading-tight">{edu.degree}</h3>
                 <p className="text-[#8b949e] text-[10px] mb-3">{edu.school}</p>
-                <div className="inline-flex items-center gap-2 text-[10px] font-bold text-[#58a6ff] bg-[#58a6ff]/5 px-3 py-1 rounded-full"><Rocket className="w-3 h-3" /> {edu.year}</div>
+                <div className="inline-flex items-center gap-2 text-[10px] font-bold text-[#58a6ff] bg-[rgba(88,166,255,0.05)] px-3 py-1 rounded-full"><Rocket className="w-3 h-3" /> {edu.year}</div>
               </div>
             ))}
           </div>
@@ -105,3 +105,4 @@ export default function TechTemplate({ data }: { data: ResumeData }) {
     </div>
   );
 }
+
