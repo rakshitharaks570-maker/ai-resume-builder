@@ -157,13 +157,30 @@ export default function BuilderPage() {
 
     setLoading(true);
     try {
+      // Add a short delay for final paint
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const options = {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
-        windowWidth: 800
+        windowWidth: 800,
+        onclone: (clonedDoc: Document) => {
+          // Final fallback: Programmatically replace any modern color strings
+          // that html2canvas cannot parse to prevent synchronization failure.
+          const allElements = clonedDoc.getElementsByTagName("*");
+          for (let i = 0; i < allElements.length; i++) {
+            const el = allElements[i] as HTMLElement;
+            if (el.style.color?.includes("oklch") || el.style.color?.includes("oklab")) {
+                el.style.color = "#000000"; // Fallback to black
+            }
+            if (el.style.backgroundColor?.includes("oklch") || el.style.backgroundColor?.includes("oklab")) {
+                el.style.backgroundColor = "#ffffff"; // Fallback to white
+            }
+          }
+        }
       };
 
       const canvas = await html2canvas(element, options);
