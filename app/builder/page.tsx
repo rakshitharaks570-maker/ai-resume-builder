@@ -175,9 +175,10 @@ export default function BuilderPage() {
           for (let i = 0; i < elements.length; i++) {
             const el = elements[i] as HTMLElement;
             
-            // We use computed style check if possible, but in a clone 
-            // we primarily target elements that might have these styles.
+            // SVG-Safe className check: SVGs use SVGAnimatedString for className
+            const className = typeof el.className === 'string' ? el.className : (el.className as any)?.baseVal || "";
             const style = el.getAttribute("style") || "";
+            
             if (style.includes("oklch") || style.includes("oklab")) {
               el.style.color = "#000000";
               el.style.backgroundColor = "transparent";
@@ -185,10 +186,10 @@ export default function BuilderPage() {
             }
             
             // Force reset any tailwind-generated dynamic color properties
-            // that are known to cause html2canvas parsing failures.
-            if (el.className?.includes("text-") || el.className?.includes("bg-")) {
-               el.style.color = window.getComputedStyle(el).color.includes("ok") ? "#0f172a" : "";
-               el.style.backgroundColor = window.getComputedStyle(el).backgroundColor.includes("ok") ? "transparent" : "";
+            if (className.includes("text-") || className.includes("bg-")) {
+               const computed = window.getComputedStyle(el);
+               if (computed.color.includes("ok")) el.style.color = "#0f172a";
+               if (computed.backgroundColor.includes("ok")) el.style.backgroundColor = "transparent";
             }
           }
         }
