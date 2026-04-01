@@ -168,16 +168,27 @@ export default function BuilderPage() {
         logging: false,
         windowWidth: 800,
         onclone: (clonedDoc: Document) => {
-          // Final fallback: Programmatically replace any modern color strings
-          // that html2canvas cannot parse to prevent synchronization failure.
-          const allElements = clonedDoc.getElementsByTagName("*");
-          for (let i = 0; i < allElements.length; i++) {
-            const el = allElements[i] as HTMLElement;
-            if (el.style.color?.includes("oklch") || el.style.color?.includes("oklab")) {
-                el.style.color = "#000000"; // Fallback to black
+          // AGGRESSIVE NEURAL GUARD:
+          // Recursively scan and force-convert any oklch/oklab color functions
+          // which are unsupported by the PDF engine's parser.
+          const elements = clonedDoc.getElementsByTagName("*");
+          for (let i = 0; i < elements.length; i++) {
+            const el = elements[i] as HTMLElement;
+            
+            // We use computed style check if possible, but in a clone 
+            // we primarily target elements that might have these styles.
+            const style = el.getAttribute("style") || "";
+            if (style.includes("oklch") || style.includes("oklab")) {
+              el.style.color = "#000000";
+              el.style.backgroundColor = "transparent";
+              el.style.borderColor = "#e2e8f0";
             }
-            if (el.style.backgroundColor?.includes("oklch") || el.style.backgroundColor?.includes("oklab")) {
-                el.style.backgroundColor = "#ffffff"; // Fallback to white
+            
+            // Force reset any tailwind-generated dynamic color properties
+            // that are known to cause html2canvas parsing failures.
+            if (el.className?.includes("text-") || el.className?.includes("bg-")) {
+               el.style.color = window.getComputedStyle(el).color.includes("ok") ? "#0f172a" : "";
+               el.style.backgroundColor = window.getComputedStyle(el).backgroundColor.includes("ok") ? "transparent" : "";
             }
           }
         }
