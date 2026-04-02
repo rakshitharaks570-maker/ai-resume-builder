@@ -149,64 +149,9 @@ export default function BuilderPage() {
   };
 
   const downloadPDF = async () => {
-    const element = resumeRef.current;
-    if (!element) return;
-
-    setLoading(true);
-    try {
-      // 1. Temporarily Force Print Styles on the LIVE element for 100% precision
-      const originalStyle = element.style.cssText;
-      element.style.width = "800px";
-      element.style.minHeight = "1123px"; // A4 Height
-      element.style.transform = "none";
-      element.style.margin = "0";
-      element.style.boxShadow = "none";
-
-      // 2. Wait for paint
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      const options = {
-        scale: 2, 
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
-        logging: false,
-        width: 800,
-        height: element.scrollHeight,
-      };
-
-      const canvas = await html2canvas(element, options);
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      
-      // REVERT Styles immediately
-      element.style.cssText = originalStyle;
-
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "pt",
-        format: "a4"
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      const imgProps = pdf.getImageProperties(imgData);
-      const widthRatio = pdfWidth / imgProps.width;
-      const heightRatio = pdfHeight / imgProps.height;
-      const fitScale = Math.min(widthRatio, heightRatio);
-      
-      const finalWidth = imgProps.width * fitScale;
-      const finalHeight = imgProps.height * fitScale;
-      
-      pdf.addImage(imgData, "PNG", (pdfWidth - finalWidth) / 2, 0, finalWidth, finalHeight, undefined, 'FAST');
-      pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
-      
-      setLoading(false);
-    } catch (error) {
-      console.error("PDF CORE FAILURE:", error);
-      alert("EMERGENCY DOWNLOAD: PDF Captured but formatting may vary. Check neural logs.");
-      setLoading(false);
-    }
+    // NATIVE PRINT STRATEGY (v6): 100% Reliability
+    // This uses the browser's own industrial-grade PDF engine.
+    window.print();
   };
 
   const renderTemplate = () => {
@@ -246,6 +191,11 @@ export default function BuilderPage() {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col selection:bg-indigo-500/30">
+      {/* Background Decorative Glows */}
+      <div className="fixed inset-0 pointer-events-none -z-10 no-print">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse-glow" />
+      </div>
+
       {/* Success Notification */}
       <AnimatePresence>
         {copySuccess && (
@@ -262,7 +212,7 @@ export default function BuilderPage() {
       </AnimatePresence>
 
       {/* Editor Header */}
-      <header className="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
+      <header className="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-black/50 backdrop-blur-xl sticky top-0 z-50 no-print">
         <div className="flex items-center gap-4">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-600/20">
             <Sparkles className="w-5 h-5 text-white" />
@@ -285,7 +235,7 @@ export default function BuilderPage() {
 
       <main className="flex-1 flex overflow-hidden">
         {/* Step Navigation Sidebar */}
-        <nav className="w-20 lg:w-64 border-r border-white/5 bg-black/30 flex flex-col p-4 gap-2">
+        <nav className="w-20 lg:w-64 border-r border-white/5 bg-black/30 flex flex-col p-4 gap-2 no-print">
           {steps.map((step) => (
             <button 
               key={step.id}
@@ -309,7 +259,7 @@ export default function BuilderPage() {
         </nav>
 
         {/* Editor Form Panel */}
-        <section className="flex-1 overflow-y-auto custom-scrollbar bg-slate-950/20 p-8 lg:p-12">
+        <section className="flex-1 overflow-y-auto custom-scrollbar bg-slate-950/20 p-8 lg:p-12 no-print">
           <div className="max-w-2xl mx-auto">
             <AnimatePresence mode="wait">
               {activeStep === "basics" && (
@@ -617,7 +567,7 @@ export default function BuilderPage() {
           </div>
           
           {/* Zoom / Info Bar */}
-          <div className="h-10 bg-black/60 border-t border-white/5 flex items-center justify-center">
+          <div className="h-10 bg-black/60 border-t border-white/5 flex items-center justify-center no-print">
              <span className="text-[9px] text-slate-600 font-bold uppercase tracking-[0.3em]">Neural Template Rendered at 100% Precision</span>
           </div>
         </section>
