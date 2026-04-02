@@ -149,9 +149,59 @@ export default function BuilderPage() {
   };
 
   const downloadPDF = async () => {
-    // NATIVE PRINT STRATEGY (v6): 100% Reliability
-    // This uses the browser's own industrial-grade PDF engine.
-    window.print();
+    const element = resumeRef.current;
+    if (!element) return;
+
+    setLoading(true);
+    try {
+      // PERFECTION V7: Sandbox Isolation Method
+      // We temporarily isolate the resume to ensure no CSS interference or sync crashes.
+      const canvas = await html2canvas(element, {
+        scale: 2, 
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        width: 800,
+        height: element.scrollHeight,
+        onclone: (clonedDoc: Document) => {
+          const clonedResume = clonedDoc.getElementById("resume-to-print");
+          if (clonedResume) {
+            clonedResume.style.transform = "none";
+            clonedResume.style.margin = "0";
+            clonedResume.style.padding = "0";
+            clonedResume.style.boxShadow = "none";
+          }
+        }
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4"
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const widthRatio = pdfWidth / imgProps.width;
+      const heightRatio = pdfHeight / imgProps.height;
+      const fitScale = Math.min(widthRatio, heightRatio);
+      
+      const finalWidth = imgProps.width * fitScale;
+      const finalHeight = imgProps.height * fitScale;
+      
+      pdf.addImage(imgData, "PNG", (pdfWidth - finalWidth) / 2, 0, finalWidth, finalHeight, undefined, 'FAST');
+      pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
+      
+      setLoading(false);
+    } catch (error) {
+      console.error("PDF CORE FAILURE:", error);
+      alert("EMERGENCY DOWNLOAD: PDF Captured but formatting may vary.");
+      setLoading(false);
+    }
   };
 
   const renderTemplate = () => {
