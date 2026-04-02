@@ -157,58 +157,44 @@ export default function BuilderPage() {
 
     setLoading(true);
     try {
-      // Add a short delay for final paint
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Extended delay for full synchronization of heavy assets
+      await new Promise(resolve => setTimeout(resolve, 1200));
       
       const options = {
-        scale: 2,
+        scale: 2, // 2x is more stable for memory than 3x on some systems
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
-        windowWidth: 800,
+        windowWidth: 1200, // Wide viewport to prevent layout compression
+        width: 800, // Target layout width
+        height: element.scrollHeight, // Capture FULL length of content
+        scrollY: -window.scrollY, // Correct for scroll offset
         onclone: (clonedDoc: Document) => {
-          // ABSOLUTELY ISOLATED NEURAL SANDBOX:
-          // We must strip every single modern style that might contain oklch/oklab.
-          const styleTags = clonedDoc.getElementsByTagName("style");
-          const linkTags = clonedDoc.getElementsByTagName("link");
+          // PRECISION SYNC V3: Enforce absolute dimensions on the cloned target
+          const clonedRoot = clonedDoc.querySelector('[ref="resumeRef"]') || clonedDoc.body.querySelector('div > div > div');
+          const target = clonedRoot as HTMLElement;
           
-          // Remove all existing stylesheets
-          Array.from(styleTags).forEach(s => s.remove());
-          Array.from(linkTags).forEach(l => l.remove());
-
-          // Inject a LEGACY-SAFE, MINIMALIST stylesheet
+          if (target) {
+            target.style.width = "800px";
+            target.style.height = "auto";
+            target.style.minHeight = "1123px"; // A4 height at 96dpi
+            target.style.boxShadow = "none";
+            target.style.margin = "0";
+            target.style.padding = "0";
+            target.style.overflow = "visible";
+          }
+          
+          // Inject a Force-Layout block
           const safetyStyle = clonedDoc.createElement("style");
           safetyStyle.innerHTML = `
-            * { box-sizing: border-box; }
-            body { font-family: sans-serif; background: #ffffff; color: #000000; margin: 0; padding: 0; }
-            .p-16 { padding: 4rem; }
-            .p-10 { padding: 2.5rem; }
-            .p-8 { padding: 2rem; }
-            .bg-white { background-color: #ffffff !important; }
-            .bg-slate-50 { background-color: #f8fafc !important; }
-            .text-slate-900 { color: #0f172a !important; }
-            .text-slate-800 { color: #1e293b !important; }
-            .text-slate-600 { color: #475569 !important; }
-            .font-serif { font-family: serif !important; }
+            * { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; }
+            body { background: white !important; overflow: visible !important; }
             .flex { display: flex !important; }
-            .grid { display: grid !important; }
-            .justify-between { justify-content: space-between !important; }
-            .items-baseline { align-items: baseline !important; }
-            .space-y-16 > * + * { margin-top: 4rem !important; }
-            .space-y-12 > * + * { margin-top: 3rem !important; }
-            .space-y-8 > * + * { margin-top: 2rem !important; }
-            .border-b-4 { border-bottom: 4px solid !important; }
-            .border-b-2 { border-bottom: 2px solid !important; }
-            .border-b { border-bottom: 1px solid !important; }
-            .uppercase { text-transform: uppercase !important; }
-            .italic { font-style: italic !important; }
-            .text-5xl { font-size: 3rem !important; }
-            .text-4xl { font-size: 2.25rem !important; }
-            .text-2xl { font-size: 1.5rem !important; }
-            .font-bold { font-weight: 700 !important; }
-            .font-black { font-weight: 900 !important; }
-            [style*="oklch"], [style*="oklab"] { color: #000000 !important; background-color: transparent !important; }
+            .flex-col { flex-direction: column !important; }
+            .w-1/3 { width: 33.333% !important; }
+            .w-2/3 { width: 66.666% !important; }
+            [style*="oklch"], [style*="oklab"] { color: #000000 !important; }
           `;
           clonedDoc.head.appendChild(safetyStyle);
         }
@@ -227,16 +213,28 @@ export default function BuilderPage() {
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
       const imgProps = pdf.getImageProperties(imgData);
-      const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
       
-      const finalWidth = imgProps.width * ratio;
-      const finalHeight = imgProps.height * ratio;
+      // Calculate scaling to fit width
+      const widthRatio = pdfWidth / imgProps.width;
+      const finalWidth = pdfWidth;
+      const finalHeight = imgProps.height * widthRatio;
       
-      const marginX = (pdfWidth - finalWidth) / 2;
-      const marginY = 0;
+      let heightLeft = finalHeight;
+      let position = 0;
 
-      pdf.addImage(imgData, "PNG", marginX, marginY, finalWidth, finalHeight, undefined, 'FAST');
-      pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Neural-Sync.pdf`);
+      // First Page
+      pdf.addImage(imgData, "PNG", 0, position, finalWidth, finalHeight, undefined, 'FAST');
+      heightLeft -= pdfHeight;
+
+      // Handle multi-page if it overflows one A4
+      while (heightLeft > 0) {
+        position = heightLeft - finalHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, finalWidth, finalHeight, undefined, 'FAST');
+        heightLeft -= pdfHeight;
+      }
+      
+      pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
       
       saveResumeData();
       setLoading(false);
