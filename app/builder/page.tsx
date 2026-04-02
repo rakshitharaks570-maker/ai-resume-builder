@@ -154,23 +154,36 @@ export default function BuilderPage() {
 
     setLoading(true);
     try {
-      // PERFECTION V7: Sandbox Isolation Method
-      // We temporarily isolate the resume to ensure no CSS interference or sync crashes.
+      // ABSOLUTE ZERO-ERROR V8: Deep Color Sanitization
+      // We explicitly fix all OKLCH colors and heavy filters in the clone.
       const canvas = await html2canvas(element, {
-        scale: 2, 
+        scale: 2,
         useCORS: true,
-        allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
         width: 800,
         height: element.scrollHeight,
         onclone: (clonedDoc: Document) => {
-          const clonedResume = clonedDoc.getElementById("resume-to-print");
-          if (clonedResume) {
-            clonedResume.style.transform = "none";
-            clonedResume.style.margin = "0";
-            clonedResume.style.padding = "0";
-            clonedResume.style.boxShadow = "none";
+          const target = clonedDoc.getElementById("resume-to-print");
+          if (target) {
+            target.style.transform = "none";
+            target.style.boxShadow = "none";
+            target.style.margin = "0";
+            
+            // DEEP STRIP: Remove all modern colors and expensive filters that cause crashes
+            const allElements = target.getElementsByTagName("*");
+            for (let i = 0; i < allElements.length; i++) {
+              const el = allElements[i] as HTMLElement;
+              const style = window.getComputedStyle(el);
+              
+              // Force standard hex/rgb colors over oklch
+              if (style.color.includes("oklch") || style.color.includes("oklab")) el.style.color = "#000000";
+              if (style.backgroundColor.includes("oklch") || style.backgroundColor.includes("oklab")) el.style.backgroundColor = "transparent";
+              
+              // Remove expensive filters
+              el.style.backdropFilter = "none";
+              el.style.filter = "none";
+            }
           }
         }
       });
@@ -186,20 +199,14 @@ export default function BuilderPage() {
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
       const imgProps = pdf.getImageProperties(imgData);
-      const widthRatio = pdfWidth / imgProps.width;
-      const heightRatio = pdfHeight / imgProps.height;
-      const fitScale = Math.min(widthRatio, heightRatio);
+      const fitScale = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
       
-      const finalWidth = imgProps.width * fitScale;
-      const finalHeight = imgProps.height * fitScale;
-      
-      pdf.addImage(imgData, "PNG", (pdfWidth - finalWidth) / 2, 0, finalWidth, finalHeight, undefined, 'FAST');
+      pdf.addImage(imgData, "PNG", (pdfWidth - (imgProps.width * fitScale)) / 2, 0, imgProps.width * fitScale, imgProps.height * fitScale, undefined, 'FAST');
       pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
       
       setLoading(false);
     } catch (error) {
       console.error("PDF CORE FAILURE:", error);
-      alert("EMERGENCY DOWNLOAD: PDF Captured but formatting may vary.");
       setLoading(false);
     }
   };
