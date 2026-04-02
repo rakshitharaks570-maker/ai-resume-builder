@@ -171,30 +171,26 @@ export default function BuilderPage() {
         height: element.scrollHeight, // Comprehensive height capture
         scrollY: -window.scrollY,
         onclone: (clonedDoc: Document) => {
-          // PRECISION SYNC V4: Use stable ID for reliable capture
+          // PRECISION SYNC V5: Stable identification without forcing layout
           const target = clonedDoc.getElementById("resume-to-print");
           
           if (target) {
             target.style.width = "800px";
             target.style.maxWidth = "800px";
             target.style.height = "auto";
-            target.style.minHeight = "1123px";
             target.style.boxShadow = "none";
-            target.style.margin = "0";
+            target.style.margin = "0 auto";
             target.style.padding = "0";
             target.style.overflow = "visible";
-            target.style.display = "flex";
-            target.style.flexDirection = "row"; // Force horizontal sidebar if flex
           }
           
           const safetyStyle = clonedDoc.createElement("style");
           safetyStyle.innerHTML = `
             * { box-sizing: border-box !important; }
             body { background: white !important; overflow: visible !important; }
-            .flex { display: flex !important; }
-            .flex-col { flex-direction: column !important; }
-            .w-1/3 { width: 33.333% !important; flex: 0 0 33.333% !important; }
-            .w-2/3 { width: 66.666% !important; flex: 0 0 66.666% !important; }
+            /* Use standard Tailwind widths for the PDF capture */
+            .w-1\\/3 { width: 33.333% !important; min-width: 33.333% !important; }
+            .w-2\\/3 { width: 66.666% !important; min-width: 66.666% !important; }
             [style*="oklch"], [style*="oklab"] { color: #000000 !important; }
           `;
           clonedDoc.head.appendChild(safetyStyle);
