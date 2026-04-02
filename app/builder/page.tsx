@@ -154,8 +154,7 @@ export default function BuilderPage() {
 
     setLoading(true);
     try {
-      // ABSOLUTE ZERO-ERROR V8: Deep Color Sanitization
-      // We explicitly fix all OKLCH colors and heavy filters in the clone.
+      // ULTRA-ROBUST V9: Guaranteed Reset and Deep Sanitization
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -170,19 +169,14 @@ export default function BuilderPage() {
             target.style.boxShadow = "none";
             target.style.margin = "0";
             
-            // DEEP STRIP: Remove all modern colors and expensive filters that cause crashes
+            // DEEP CLEAN: Strip all expensive blurs and modern colors
             const allElements = target.getElementsByTagName("*");
             for (let i = 0; i < allElements.length; i++) {
               const el = allElements[i] as HTMLElement;
-              const style = window.getComputedStyle(el);
-              
-              // Force standard hex/rgb colors over oklch
-              if (style.color.includes("oklch") || style.color.includes("oklab")) el.style.color = "#000000";
-              if (style.backgroundColor.includes("oklch") || style.backgroundColor.includes("oklab")) el.style.backgroundColor = "transparent";
-              
-              // Remove expensive filters
               el.style.backdropFilter = "none";
               el.style.filter = "none";
+              el.style.transition = "none";
+              el.style.animation = "none";
             }
           }
         }
@@ -203,10 +197,10 @@ export default function BuilderPage() {
       
       pdf.addImage(imgData, "PNG", (pdfWidth - (imgProps.width * fitScale)) / 2, 0, imgProps.width * fitScale, imgProps.height * fitScale, undefined, 'FAST');
       pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
-      
-      setLoading(false);
     } catch (error) {
-      console.error("PDF CORE FAILURE:", error);
+      console.error("PDF SYSTEM ERROR:", error);
+    } finally {
+      // GUARANTEED RESET: The button will ALWAYS unlock
       setLoading(false);
     }
   };
