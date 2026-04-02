@@ -150,56 +150,37 @@ export default function BuilderPage() {
 
   const downloadPDF = async () => {
     const element = resumeRef.current;
-    if (!element) {
-      alert("Neural Render Target not found.");
-      return;
-    }
+    if (!element) return;
 
     setLoading(true);
     try {
-      // Extended delay for full synchronization of heavy assets
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      // 1. Temporarily Force Print Styles on the LIVE element for 100% precision
+      const originalStyle = element.style.cssText;
+      element.style.width = "800px";
+      element.style.minHeight = "1123px"; // A4 Height
+      element.style.transform = "none";
+      element.style.margin = "0";
+      element.style.boxShadow = "none";
+
+      // 2. Wait for paint
+      await new Promise(resolve => setTimeout(resolve, 800));
+
       const options = {
         scale: 2, 
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
-        windowWidth: 1200, // Wide viewport for layout stability
-        width: 800, // Explicit layout width
-        height: element.scrollHeight, // Comprehensive height capture
-        scrollY: -window.scrollY,
-        onclone: (clonedDoc: Document) => {
-          // PRECISION SYNC V5: Stable identification without forcing layout
-          const target = clonedDoc.getElementById("resume-to-print");
-          
-          if (target) {
-            target.style.width = "800px";
-            target.style.maxWidth = "800px";
-            target.style.height = "auto";
-            target.style.boxShadow = "none";
-            target.style.margin = "0 auto";
-            target.style.padding = "0";
-            target.style.overflow = "visible";
-          }
-          
-          const safetyStyle = clonedDoc.createElement("style");
-          safetyStyle.innerHTML = `
-            * { box-sizing: border-box !important; }
-            body { background: white !important; overflow: visible !important; }
-            /* Use standard Tailwind widths for the PDF capture */
-            .w-1\\/3 { width: 33.333% !important; min-width: 33.333% !important; }
-            .w-2\\/3 { width: 66.666% !important; min-width: 66.666% !important; }
-            [style*="oklch"], [style*="oklab"] { color: #000000 !important; }
-          `;
-          clonedDoc.head.appendChild(safetyStyle);
-        }
+        width: 800,
+        height: element.scrollHeight,
       };
 
       const canvas = await html2canvas(element, options);
       const imgData = canvas.toDataURL("image/png", 1.0);
       
+      // REVERT Styles immediately
+      element.style.cssText = originalStyle;
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
@@ -210,25 +191,20 @@ export default function BuilderPage() {
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
       const imgProps = pdf.getImageProperties(imgData);
-      
-      // ONE PAGE SCALE STRATEGY
       const widthRatio = pdfWidth / imgProps.width;
       const heightRatio = pdfHeight / imgProps.height;
-      const fitScale = Math.min(widthRatio, heightRatio); // Scale down to fit entire height or width
+      const fitScale = Math.min(widthRatio, heightRatio);
       
       const finalWidth = imgProps.width * fitScale;
       const finalHeight = imgProps.height * fitScale;
       
-      const marginX = (pdfWidth - finalWidth) / 2;
-
-      pdf.addImage(imgData, "PNG", marginX, 0, finalWidth, finalHeight, undefined, 'FAST');
+      pdf.addImage(imgData, "PNG", (pdfWidth - finalWidth) / 2, 0, finalWidth, finalHeight, undefined, 'FAST');
       pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
       
-      saveResumeData();
       setLoading(false);
     } catch (error) {
-      console.error("PDF Engineering Error:", error);
-      alert("PDF SYNCHRONIZATION FAILED. CHECK NEURAL CONSOLE.");
+      console.error("PDF CORE FAILURE:", error);
+      alert("EMERGENCY DOWNLOAD: PDF Captured but formatting may vary. Check neural logs.");
       setLoading(false);
     }
   };
