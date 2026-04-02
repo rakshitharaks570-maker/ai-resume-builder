@@ -158,42 +158,43 @@ export default function BuilderPage() {
     setLoading(true);
     try {
       // Extended delay for full synchronization of heavy assets
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       const options = {
-        scale: 2, // 2x is more stable for memory than 3x on some systems
+        scale: 2, 
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
-        windowWidth: 1200, // Wide viewport to prevent layout compression
-        width: 800, // Target layout width
-        height: element.scrollHeight, // Capture FULL length of content
-        scrollY: -window.scrollY, // Correct for scroll offset
+        windowWidth: 1200, // Wide viewport for layout stability
+        width: 800, // Explicit layout width
+        height: element.scrollHeight, // Comprehensive height capture
+        scrollY: -window.scrollY,
         onclone: (clonedDoc: Document) => {
-          // PRECISION SYNC V3: Enforce absolute dimensions on the cloned target
-          const clonedRoot = clonedDoc.querySelector('[ref="resumeRef"]') || clonedDoc.body.querySelector('div > div > div');
-          const target = clonedRoot as HTMLElement;
+          // PRECISION SYNC V4: Use stable ID for reliable capture
+          const target = clonedDoc.getElementById("resume-to-print");
           
           if (target) {
             target.style.width = "800px";
+            target.style.maxWidth = "800px";
             target.style.height = "auto";
-            target.style.minHeight = "1123px"; // A4 height at 96dpi
+            target.style.minHeight = "1123px";
             target.style.boxShadow = "none";
             target.style.margin = "0";
             target.style.padding = "0";
             target.style.overflow = "visible";
+            target.style.display = "flex";
+            target.style.flexDirection = "row"; // Force horizontal sidebar if flex
           }
           
-          // Inject a Force-Layout block
           const safetyStyle = clonedDoc.createElement("style");
           safetyStyle.innerHTML = `
-            * { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; }
+            * { box-sizing: border-box !important; }
             body { background: white !important; overflow: visible !important; }
             .flex { display: flex !important; }
             .flex-col { flex-direction: column !important; }
-            .w-1/3 { width: 33.333% !important; }
-            .w-2/3 { width: 66.666% !important; }
+            .w-1/3 { width: 33.333% !important; flex: 0 0 33.333% !important; }
+            .w-2/3 { width: 66.666% !important; flex: 0 0 66.666% !important; }
             [style*="oklch"], [style*="oklab"] { color: #000000 !important; }
           `;
           clonedDoc.head.appendChild(safetyStyle);
@@ -214,26 +215,17 @@ export default function BuilderPage() {
       
       const imgProps = pdf.getImageProperties(imgData);
       
-      // Calculate scaling to fit width
+      // ONE PAGE SCALE STRATEGY
       const widthRatio = pdfWidth / imgProps.width;
-      const finalWidth = pdfWidth;
-      const finalHeight = imgProps.height * widthRatio;
+      const heightRatio = pdfHeight / imgProps.height;
+      const fitScale = Math.min(widthRatio, heightRatio); // Scale down to fit entire height or width
       
-      let heightLeft = finalHeight;
-      let position = 0;
-
-      // First Page
-      pdf.addImage(imgData, "PNG", 0, position, finalWidth, finalHeight, undefined, 'FAST');
-      heightLeft -= pdfHeight;
-
-      // Handle multi-page if it overflows one A4
-      while (heightLeft > 0) {
-        position = heightLeft - finalHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, finalWidth, finalHeight, undefined, 'FAST');
-        heightLeft -= pdfHeight;
-      }
+      const finalWidth = imgProps.width * fitScale;
+      const finalHeight = imgProps.height * fitScale;
       
+      const marginX = (pdfWidth - finalWidth) / 2;
+
+      pdf.addImage(imgData, "PNG", marginX, 0, finalWidth, finalHeight, undefined, 'FAST');
       pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
       
       saveResumeData();
@@ -646,7 +638,7 @@ export default function BuilderPage() {
           {/* Scrollable Preview Area */}
           <div className="flex-1 overflow-y-auto p-12 bg-slate-900/50 flex justify-center custom-scrollbar">
              <div className="w-full origin-top transform scale-90 lg:scale-100" style={{ maxWidth: '800px' }}>
-                <div ref={resumeRef} className="shadow-2xl shadow-black/80 rounded-sm overflow-hidden">
+                <div ref={resumeRef} id="resume-to-print" className="shadow-2xl shadow-black/80 rounded-sm overflow-hidden">
                    {renderTemplate()}
                 </div>
              </div>
