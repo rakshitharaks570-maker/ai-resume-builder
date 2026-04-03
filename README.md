@@ -12,7 +12,7 @@ The industry-standard AI resume system. Bypassing modern ATS filters through str
 
 ## 🚀 Deployment (Vercel)
 
-To get a professional deployment link like `https://ai-resume-builder-rakshitharaks570.vercel.app/`:
+To get a professional deployment link like `https://ai-resume-builder-pink-eta.vercel.app/`:
 
 1.  **Push to GitHub**: Initialize a git repository and push your code to GitHub.
     ```bash

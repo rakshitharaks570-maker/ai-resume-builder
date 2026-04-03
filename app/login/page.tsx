@@ -58,7 +58,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-6 selection:bg-indigo-500/30 overflow-hidden relative">
       {/* Background Decorative Glows */}
       <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse-glow" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-rose-600/10 rounded-full blur-[120px] animate-pulse-glow" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
         {/* Subtle Grid Overlay */}
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
@@ -75,7 +75,7 @@ export default function LoginPage() {
             <Sparkles className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-black italic tracking-tighter uppercase mb-2">
-            AI RESUME <span className="text-indigo-500">BUILDER</span>
+            AI RESUME <span className="text-rose-500">BUILDER</span>
           </h1>
           <div className="flex items-center gap-2">
              <Globe className="w-3 h-3 text-slate-500" />
@@ -85,13 +85,13 @@ export default function LoginPage() {
 
         {/* Main Card */}
         <div className="glass-panel p-10 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
           
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-lg font-black uppercase tracking-widest italic">Initialization</h2>
-            <div className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-lg flex items-center gap-2">
-               <Fingerprint className="w-3 h-3 text-indigo-400" />
-               <span className="text-[8px] font-black text-indigo-400 uppercase tracking-widest">Neural Link v4.0</span>
+            <div className="px-3 py-1 bg-rose-500/10 border border-rose-500/20 rounded-lg flex items-center gap-2">
+               <Fingerprint className="w-3 h-3 text-rose-400" />
+               <span className="text-[8px] font-black text-rose-400 uppercase tracking-widest">Neural Link v4.0</span>
             </div>
           </div>
 
@@ -112,7 +112,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 ml-1">Comm-Link / Email</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-600 group-focus-within:text-indigo-400 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-600 group-focus-within:text-rose-400 transition-colors">
                   <Mail className="h-4 w-4" />
                 </div>
                 <input
@@ -129,7 +129,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 ml-1">Access Key / Password</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-600 group-focus-within:text-indigo-400 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-600 group-focus-within:text-rose-400 transition-colors">
                   <Lock className="h-4 w-4" />
                 </div>
                 <input
@@ -146,7 +146,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 group shadow-xl shadow-indigo-500/10"
+              className="btn-primary w-full py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 group shadow-xl shadow-rose-500/10"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
               {loading ? "AUTHENTICATING..." : "AUTHORIZE ACCESS"}
@@ -190,7 +190,7 @@ export default function LoginPage() {
             <button
               onClick={handleQuickAccess}
               disabled={loading}
-              className="w-full py-5 rounded-2xl bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 border border-indigo-400/30 active:scale-[0.98]"
+              className="w-full py-5 rounded-2xl bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 border border-rose-400/30 active:scale-[0.98]"
             >
               <Fingerprint className="w-5 h-5" />
               Immediate Admin Entry
@@ -207,10 +207,10 @@ export default function LoginPage() {
 
         <div className="mt-8 text-center space-y-6">
            <a 
-             href="https://ai-resume-builder-rakshitharaks570.vercel.app/login" 
+             href="https://ai-resume-builder-pink-eta.vercel.app/builder" 
              target="_blank" 
              rel="noopener noreferrer"
-             className="inline-flex items-center gap-2 text-[10px] text-indigo-400 font-black uppercase tracking-[0.3em] hover:text-white transition-colors group"
+             className="inline-flex items-center gap-2 text-[10px] text-rose-400 font-black uppercase tracking-[0.3em] hover:text-white transition-colors group"
            >
              <Globe className="w-3 h-3 group-hover:animate-spin-slow" />
              Access Professional Global Node

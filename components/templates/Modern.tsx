@@ -37,7 +37,7 @@ export default function ModernTemplate({ data }: { data: ResumeData }) {
         <div className="col-span-8">
           <section className="mb-16">
             <div className="flex items-center gap-4 mb-10">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Professional Narrative</h2>
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#e11d48]">Professional Narrative</h2>
               <div className="flex-1 h-px bg-[#f1f5f9]" />
             </div>
             <p className="text-[#475569] leading-relaxed text-lg font-medium">{data.summary}</p>
@@ -45,21 +45,21 @@ export default function ModernTemplate({ data }: { data: ResumeData }) {
 
           <section>
             <div className="flex items-center gap-4 mb-10">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Operational Experience</h2>
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#e11d48]">Operational Experience</h2>
               <div className="flex-1 h-px bg-[#f1f5f9]" />
             </div>
             <div className="space-y-12">
               {data.experience.map((exp, index) => (
                 <div key={index} className="group transition-all">
                   <div className="flex justify-between items-baseline mb-2">
-                    <h3 className="text-2xl font-black text-[#0f172a] tracking-tight group-hover:text-[#4f46e5] transition-colors">{exp.role}</h3>
+                    <h3 className="text-2xl font-black text-[#0f172a] tracking-tight group-hover:text-[#e11d48] transition-colors">{exp.role}</h3>
                     <span className="text-[10px] font-black text-[#94a3b8] border border-[#f1f5f9] px-3 py-1.5 rounded-lg uppercase tracking-widest">{exp.period}</span>
                   </div>
-                  <p className="text-[#4f46e5] font-bold text-sm mb-4 uppercase tracking-widest">{exp.company}</p>
+                  <p className="text-[#e11d48] font-bold text-sm mb-4 uppercase tracking-widest">{exp.company}</p>
                   <ul className="space-y-3">
                     {exp.description.map((desc, i) => (
                       <li key={i} className="text-[#475569] flex items-start gap-3">
-                         <div className="w-1.5 h-1.5 rounded-full bg-[rgba(79,70,229,0.3)] mt-2.5 shrink-0" />
+                         <div className="w-1.5 h-1.5 rounded-full bg-[rgba(225,29,72,0.3)] mt-2.5 shrink-0" />
                          <span className="leading-relaxed font-medium text-[15px]">{desc}</span>
                       </li>
                     ))}
@@ -74,11 +74,11 @@ export default function ModernTemplate({ data }: { data: ResumeData }) {
         <div className="col-span-4 space-y-16">
           <section>
              <div className="flex items-center gap-4 mb-10">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#4f46e5]">Core Expertise</h2>
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#e11d48]">Core Expertise</h2>
             </div>
             <div className="flex flex-wrap gap-2">
               {data.skills.map((skill, index) => (
-                <span key={index} className="px-4 py-2 bg-[#f8fafc] text-[#334155] text-[10px] font-black uppercase tracking-widest rounded-xl border border-[#f1f5f9] hover:border-[#c7d2fe] hover:bg-white hover:text-[#4f46e5] transition-all cursor-default shadow-sm">
+                <span key={index} className="px-4 py-2 bg-[#fff1f2] text-[#334155] text-[10px] font-black uppercase tracking-widest rounded-xl border border-[#fee2e2] hover:border-[#fecdd3] hover:bg-white hover:text-[#e11d48] transition-all cursor-default shadow-sm">
                   {skill}
                 </span>
               ))}

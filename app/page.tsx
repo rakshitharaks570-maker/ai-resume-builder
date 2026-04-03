@@ -24,7 +24,7 @@ export default function LandingPage() {
           title="ResumeAI"
           subtitle="Precision Engineering"
           icon={Sparkles}
-          themeColor="primary"
+          themeColor="rose"
         />
 
         <main className="pt-24 pb-32 flex flex-col items-center">
@@ -32,7 +32,7 @@ export default function LandingPage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-10 shadow-2xl shadow-indigo-500/10"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-[0.4em] text-rose-400 mb-10 shadow-2xl shadow-rose-500/10"
           >
             <Star className="w-3 h-3 fill-current" />
             Empowering Elite Careers with Neural Intelligence
@@ -47,7 +47,7 @@ export default function LandingPage() {
               className="text-7xl md:text-9xl font-black italic tracking-tighter leading-[0.85] title-glow uppercase"
             >
               ENGINEER YOUR <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 animate-gradient">FUTURE.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-purple-400 to-rose-400 animate-gradient">FUTURE.</span>
             </motion.h1>
 
             <motion.p 
@@ -68,7 +68,7 @@ export default function LandingPage() {
             >
               <Link 
                 href={status === "authenticated" ? "/builder" : "/login"}
-                className="px-14 py-6 rounded-[2.5rem] bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-black uppercase tracking-[0.3em] flex items-center gap-3 group shadow-2xl shadow-indigo-600/20 active:scale-[0.98] transition-all"
+                className="px-14 py-6 rounded-[2.5rem] bg-rose-600 hover:bg-rose-500 text-white text-[11px] font-black uppercase tracking-[0.3em] flex items-center gap-3 group shadow-2xl shadow-rose-600/20 active:scale-[0.98] transition-all"
               >
                 Launch Builder
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
@@ -102,9 +102,9 @@ export default function LandingPage() {
 function SimpleFeature({ icon: Icon, label }: { icon: any, label: string }) {
   return (
     <div className="flex flex-col items-center gap-4 group cursor-default">
-      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 group-hover:text-indigo-400 group-hover:bg-indigo-500/10 transition-all duration-500 relative">
+      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-500 group-hover:text-rose-400 group-hover:bg-rose-500/10 transition-all duration-500 relative">
          <Icon className="w-5 h-5 relative z-10" />
-         <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+         <div className="absolute inset-0 bg-rose-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 group-hover:text-white transition-colors">{label}</span>
     </div>
@@ -115,10 +115,10 @@ function Footer() {
   return (
     <footer className="border-t border-white/5 py-20 flex flex-col md:flex-row justify-between items-center gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-600">
       <div className="flex items-center gap-4">
-        <div className="w-8 h-8 bg-indigo-600/20 rounded-xl flex items-center justify-center text-indigo-500">
+        <div className="w-8 h-8 bg-rose-600/20 rounded-xl flex items-center justify-center text-rose-500">
           <Sparkles className="w-4 h-4" />
         </div>
-        <span className="text-white italic tracking-tighter">RESUME<span className="text-indigo-500">AI</span></span>
+        <span className="text-white italic tracking-tighter">RESUME<span className="text-rose-500">AI</span></span>
       </div>
 
       <div className="flex gap-10">

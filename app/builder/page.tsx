@@ -12,16 +12,16 @@ import { ResumeData, TemplateId, Experience, Education } from "../../types/resum
 import TemplateSelector from "../../components/TemplateSelector";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Import Templates
 import MinimalistTemplate from "../../components/templates/Minimalist";
 import ModernTemplate from "../../components/templates/Modern";
 import CreativeTemplate from "../../components/templates/Creative";
 import ExecutiveTemplate from "../../components/templates/Executive";
 import TechTemplate from "../../components/templates/Tech";
 import BoldTemplate from "../../components/templates/Bold";
-import SuiteHeader from "../../components/SuiteHeader";
-import jsPDF from "jspdf";
+import AcademicTemplate from "../../components/templates/Academic";
+import CompactTemplate from "../../components/templates/Compact";
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const INITIAL_DATA: ResumeData = {
   name: "ALEX RIVERS",
@@ -61,6 +61,7 @@ export default function BuilderPage() {
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const resumeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -149,59 +150,75 @@ export default function BuilderPage() {
   };
 
   const downloadPDF = async () => {
-    const element = resumeRef.current;
-    if (!element) return;
-
-    setLoading(true);
+    if (!resumeRef.current) return;
+    setIsExporting(true);
+    console.log("PDF Export Protocol Initiated...");
+    
     try {
-      // ULTRA-ROBUST V9: Guaranteed Reset and Deep Sanitization
+      const element = resumeRef.current;
+      
+      // Wait for all fonts to be ready to prevent blank/incorrectly sized text
+      if (typeof document !== 'undefined') {
+        await document.fonts.ready;
+      }
+
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 2, // Reducing from 4 for memory safety and broad device support
         useCORS: true,
+        logging: true,
         backgroundColor: "#ffffff",
-        logging: false,
-        width: 800,
-        height: element.scrollHeight,
-        onclone: (clonedDoc: Document) => {
-          const target = clonedDoc.getElementById("resume-to-print");
-          if (target) {
-            target.style.transform = "none";
-            target.style.boxShadow = "none";
-            target.style.margin = "0";
+        onclone: (clonedDoc) => {
+          console.log("Cloning DOM for high-precision capture...");
+          const clonedElement = clonedDoc.getElementById("resume-to-print");
+          if (clonedElement) {
+            // FORCE VISIBILITY: Handle cases where sidebar might be display:none
+            clonedElement.style.display = "block";
+            clonedElement.style.visibility = "visible";
+            clonedElement.style.opacity = "1";
+            clonedElement.style.transform = "none";
+            clonedElement.style.position = "fixed";
+            clonedElement.style.top = "0";
+            clonedElement.style.left = "0";
+            clonedElement.style.zIndex = "999";
             
-            // DEEP CLEAN: Strip all expensive blurs and modern colors
-            const allElements = target.getElementsByTagName("*");
-            for (let i = 0; i < allElements.length; i++) {
-              const el = allElements[i] as HTMLElement;
-              el.style.backdropFilter = "none";
-              el.style.filter = "none";
-              el.style.transition = "none";
-              el.style.animation = "none";
+            // Critical Size constraints for A4
+            clonedElement.style.width = "210mm";
+            clonedElement.style.height = "297mm";
+            
+            // Ensure every parent in the hierarchy to the root is visible
+            let currentParent = clonedElement.parentElement;
+            while (currentParent) {
+              currentParent.style.display = "block";
+              currentParent.style.visibility = "visible";
+              currentParent.style.overflow = "visible";
+              currentParent = currentParent.parentElement;
             }
           }
         }
       });
 
-      const imgData = canvas.toDataURL("image/png", 1.0);
+      console.log("Captured Canvas Resolution:", canvas.width, "x", canvas.height);
+      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "portrait",
-        unit: "pt",
+        unit: "mm",
         format: "a4"
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      const imgProps = pdf.getImageProperties(imgData);
-      const fitScale = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+      pdf.save(`Neural-Resume-${resumeData.name.replace(/\s+/g, '-')}.pdf`);
       
-      pdf.addImage(imgData, "PNG", (pdfWidth - (imgProps.width * fitScale)) / 2, 0, imgProps.width * fitScale, imgProps.height * fitScale, undefined, 'FAST');
-      pdf.save(`Resume-${resumeData.name.replace(/\s+/g, '-')}-Sync.pdf`);
+      console.log("PDF Protocol Complete.");
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 3000);
     } catch (error) {
-      console.error("PDF SYSTEM ERROR:", error);
+      console.error("Neural PDF generation failed:", error);
+      alert("PDF SYNCHRONIZATION FAILED. Check browser console for Neural Core logs.");
     } finally {
-      // GUARANTEED RESET: The button will ALWAYS unlock
-      setLoading(false);
+      setIsExporting(false);
     }
   };
 
@@ -213,6 +230,8 @@ export default function BuilderPage() {
       case "creative": return <CreativeTemplate {...props} />;
       case "executive": return <ExecutiveTemplate {...props} />;
       case "tech": return <TechTemplate {...props} />;
+      case "academic": return <AcademicTemplate {...props} />;
+      case "compact": return <CompactTemplate {...props} />;
       case "bold": return <BoldTemplate {...props} />;
       default: return <ModernTemplate {...props} />;
     }
@@ -222,12 +241,12 @@ export default function BuilderPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-black text-white">
         <div className="relative">
-          <Loader2 className="w-16 h-16 animate-spin text-indigo-500 mb-6 opacity-20" />
+          <Loader2 className="w-16 h-16 animate-spin text-rose-500 mb-6 opacity-20" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <Sparkles className="w-6 h-6 text-indigo-400 animate-pulse" />
+            <Sparkles className="w-6 h-6 text-rose-400 animate-pulse" />
           </div>
         </div>
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-indigo-500/50">Synchronizing Neural Core...</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-rose-500/50">Synchronizing Neural Core...</p>
       </div>
     );
   }
@@ -241,10 +260,10 @@ export default function BuilderPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-black text-white flex flex-col selection:bg-rose-500/30">
       {/* Background Decorative Glows */}
       <div className="fixed inset-0 pointer-events-none -z-10 no-print">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse-glow" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-rose-600/10 rounded-full blur-[120px] animate-pulse-glow" />
       </div>
 
       {/* Success Notification */}
@@ -254,7 +273,7 @@ export default function BuilderPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-indigo-600 px-6 py-3 rounded-full flex items-center gap-3 shadow-2xl shadow-indigo-500/40 border border-indigo-400/30"
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-rose-600 px-6 py-3 rounded-full flex items-center gap-3 shadow-2xl shadow-rose-500/40 border border-rose-400/30"
           >
             <CheckCircle2 className="w-4 h-4 text-white" />
             <span className="text-[10px] font-black uppercase tracking-widest text-white">Neural State Cached Successfully</span>
@@ -265,16 +284,20 @@ export default function BuilderPage() {
       {/* Editor Header */}
       <header className="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-black/50 backdrop-blur-xl sticky top-0 z-50 no-print">
         <div className="flex items-center gap-4">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-600/20">
+          <div className="w-8 h-8 bg-rose-600 rounded-lg flex items-center justify-center shadow-lg shadow-rose-600/20">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <h1 className="font-black italic tracking-tighter text-xl text-white uppercase mt-0.5">RESUME<span className="text-indigo-400">AI</span> <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded ml-2 uppercase not-italic tracking-widest">Core v4.0</span></h1>
+          <h1 className="font-black italic tracking-tighter text-xl text-white uppercase mt-0.5">RESUME<span className="text-rose-400">AI</span> <span className="text-[10px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded ml-2 uppercase not-italic tracking-widest">Core v5.0</span></h1>
         </div>
 
         <div className="flex items-center gap-4">
-          <button onClick={downloadPDF} disabled={loading} className="btn-primary px-8 py-2.5 rounded-full text-[10px] flex items-center gap-3 active:scale-95 transition-all">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Execute PDF Export
+          <button 
+            onClick={downloadPDF} 
+            disabled={isExporting} 
+            className="btn-primary px-8 py-2.5 rounded-full text-[10px] flex items-center gap-3 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            {isExporting ? "Synchronizing PDF..." : "Execute PDF Export"}
           </button>
           <div className="h-4 w-[1px] bg-white/10" />
           <button onClick={() => signOut({ callbackUrl: "/login" })} className="text-slate-500 hover:text-white transition-colors group">
@@ -291,7 +314,7 @@ export default function BuilderPage() {
             <button 
               key={step.id}
               onClick={() => setActiveStep(step.id as Step)}
-              className={`flex items-center gap-3 p-4 rounded-2xl transition-all group ${activeStep === step.id ? 'bg-indigo-500/10 text-indigo-400 shadow-inner border border-indigo-500/20' : 'text-slate-500 hover:bg-white/5'}`}
+              className={`flex items-center gap-3 p-4 rounded-2xl transition-all group ${activeStep === step.id ? 'bg-rose-500/10 text-rose-400 shadow-inner border border-rose-500/20' : 'text-slate-500 hover:bg-white/5'}`}
             >
               <step.icon className={`w-5 h-5 ${activeStep === step.id ? 'scale-110' : 'group-hover:scale-110'} transition-transform`} />
               <span className="hidden lg:block text-[10px] font-black uppercase tracking-widest">{step.label}</span>
@@ -299,8 +322,8 @@ export default function BuilderPage() {
           ))}
           
           <div className="mt-auto p-4 hidden lg:block">
-            <div className="glass-panel p-4 rounded-2xl border-indigo-500/20">
-               <div className="flex items-center gap-2 mb-2 text-indigo-400">
+            <div className="glass-panel p-4 rounded-2xl border-rose-500/20">
+               <div className="flex items-center gap-2 mb-2 text-rose-400">
                   <Wand2 className="w-3 h-3" />
                   <span className="text-[9px] font-black uppercase">Elite Tip</span>
                </div>
@@ -367,7 +390,7 @@ export default function BuilderPage() {
                         <h2 className="text-3xl font-black italic tracking-tighter mb-2 uppercase">Exp Grid</h2>
                         <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Log your previous deployments and operations.</p>
                      </div>
-                     <button onClick={addExperience} className="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl hover:bg-indigo-500/20 transition-all border border-indigo-500/20">
+                     <button onClick={addExperience} className="p-3 bg-rose-500/10 text-rose-400 rounded-xl hover:bg-rose-500/20 transition-all border border-rose-500/20">
                         <Plus className="w-5 h-5" />
                      </button>
                    </div>
@@ -428,7 +451,7 @@ export default function BuilderPage() {
                         <h2 className="text-3xl font-black italic tracking-tighter mb-2 uppercase">Edu Grid</h2>
                         <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Log your academic foundations and credentials.</p>
                      </div>
-                     <button onClick={addEducation} className="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl hover:bg-indigo-500/20 transition-all border border-indigo-500/20">
+                     <button onClick={addEducation} className="p-3 bg-rose-500/10 text-rose-400 rounded-xl hover:bg-rose-500/20 transition-all border border-rose-500/20">
                         <Plus className="w-5 h-5" />
                      </button>
                    </div>
@@ -480,8 +503,8 @@ export default function BuilderPage() {
                     <div className="space-y-6">
                       <div className="flex flex-wrap gap-3">
                         {resumeData.skills.map((skill, idx) => (
-                          <div key={idx} className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-xl group transition-all hover:border-indigo-500/40">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">{skill}</span>
+                          <div key={idx} className="flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 px-4 py-2 rounded-xl group transition-all hover:border-rose-500/40">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-rose-400">{skill}</span>
                             <button onClick={() => {
                               const newSkills = resumeData.skills.filter((_, i) => i !== idx);
                               updateData('skills', newSkills);
@@ -523,7 +546,7 @@ export default function BuilderPage() {
                   </div>
 
                   <div className="glass-panel p-8 rounded-[2.5rem] relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500/30" />
+                    <div className="absolute top-0 left-0 w-full h-1 bg-rose-500/30" />
                     <textarea 
                       rows={8}
                       value={resumeData.summary}
@@ -535,7 +558,7 @@ export default function BuilderPage() {
                     <button 
                       onClick={improveSummary}
                       disabled={aiLoading}
-                      className="mt-6 w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition-all font-black text-[10px] uppercase tracking-widest"
+                      className="mt-6 w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-all font-black text-[10px] uppercase tracking-widest"
                     >
                       {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                       {aiLoading ? "Synchronizing with AI..." : "Enhance with Neural Link"}

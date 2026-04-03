@@ -3,9 +3,9 @@ import { Layout, CheckCircle2 } from "lucide-react";
 
 const templates: { id: TemplateId; name: string; description: string; previewColor: string }[] = [
   { id: 'minimalist', name: 'Minimalist', description: 'Clean & Classic', previewColor: 'bg-white' },
-  { id: 'modern', name: 'Modern', description: 'Professional & Blue', previewColor: 'bg-primary' },
+  { id: 'modern', name: 'Modern', description: 'Professional & Rose', previewColor: 'bg-rose-500' },
   { id: 'creative', name: 'Creative', description: 'Vibrant & Sidebar', previewColor: 'bg-slate-900' },
-  { id: 'executive', name: 'Executive', description: 'Serif & Elegant', previewColor: 'bg-slate-50' },
+  { id: 'executive', name: 'Executive', description: 'Serif & Elegant', previewColor: 'bg-rose-50' },
   { id: 'tech', name: 'Tech', description: 'Monospace & Dark', previewColor: 'bg-[#0d1117]' },
   { id: 'academic', name: 'Academic', description: 'Traditional & Formal', previewColor: 'bg-white' },
   { id: 'compact', name: 'Compact', description: 'Dense & Efficient', previewColor: 'bg-white' },

@@ -25,12 +25,12 @@ export default function SuiteHeader({ title, subtitle, icon: Icon, themeColor }:
     >
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-4 group cursor-pointer" onClick={() => router.push("/")}>
-          <div className="bg-indigo-600 p-3 rounded-2xl text-white shadow-xl shadow-indigo-500/20 group-hover:rotate-12 transition-transform duration-500">
+          <div className={`${themeColor === 'rose' ? 'bg-rose-600 shadow-rose-500/20' : 'bg-indigo-600 shadow-indigo-500/20'} p-3 rounded-2xl text-white shadow-xl group-hover:rotate-12 transition-transform duration-500`}>
             <Sparkles className="w-6 h-6" />
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tighter text-white uppercase italic leading-none">
-              RESUME<span className="text-indigo-500">AI</span>
+              RESUME<span className={themeColor === 'rose' ? 'text-rose-500' : 'text-indigo-500'}>AI</span>
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <Globe className="w-3 h-3 text-slate-500" />
